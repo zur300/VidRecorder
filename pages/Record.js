@@ -1,18 +1,36 @@
 // imports:
-import { getMediaList } from "./GetMedia";
-import React from "react"; // library of react skills
 import { useSearchParams } from "next/navigation";
-import { useReactMediaRecorder } from "react-media-recorder"; // the library that alow to record the video
 import { Button } from "primereact/button"; // library of button types and styles from prime react
+import React, { useEffect, useState } from "react"; // library of react skills
+import { useReactMediaRecorder } from "react-media-recorder"; // the library that alow to record the video
 // FileUpload is an advanced uploader with dragdrop support, multi file uploads, auto uploading, progress tracking and validations
-import { FileUpload } from "primereact/fileupload"; // the library that upload files to the cloud
-import "primereact/resources/themes/lara-light-indigo/theme.css"; // theme
-import "primereact/resources/primereact.min.css"; // core css
 import "primeicons/primeicons.css"; // icons
+import { FileUpload } from "primereact/fileupload"; // the library that upload files to the cloud
+import "primereact/resources/primereact.min.css"; // core css
+import "primereact/resources/themes/lara-light-indigo/theme.css"; // theme
+import { getUrlsList, uploadData } from "./api/S3APIs";
 // import { url } from "inspector";
 
 // create a record function
 function Record() {
+  const [files, setFiles] = useState([]);
+  useEffect(() => {
+    getAllFiles();
+  }, []);
+
+  const getAllFiles = async () => {
+    const files = await getUrlsList();
+    setFiles(files);
+    console.log(files);
+  };
+
+  const mapList = () => {
+    console.log("mmn");
+    return files?.map((val, index) => {
+      return <video src={val} controls></video>;
+    });
+  };
+
   const searchParams = useSearchParams();
   // bring the uses of react media recoder library
   const { status, startRecording, stopRecording, mediaBlobUrl } =
@@ -47,21 +65,16 @@ function Record() {
       {/* show the video that recorded from the camera */}
       {/* <video src={mediaBlobUrl} autoPlay controls></video> */}
       <video
-        src="https://itay-audios.nyc3.digitaloceanspaces.com/703444fb-9425-4a63-b5fd-fed3f545b6dc.mp3"
-        autoPlay
+        src="https://nyc3.digitaloceanspaces.com/itay-audios/6daefc7b-1c2a-4aaa-bc40-05401258d880%20(1).mp3"
+        // autoPlay
         controls
       ></video>
+      <button onClick={uploadData}>upload</button>
+      {mapList()}
       <br />
       <br />
       {/* link to the cloud upload */}
-      <FileUpload name="demo" url="/api/S3APIs"></FileUpload>
-      <button
-        onClick={() => {
-          getMediaList();
-        }}
-      >
-        press
-      </button>
+      {/* <FileUpload name="demo" url="/api/S3APIs"></FileUpload> */}
     </div>
   );
 }
