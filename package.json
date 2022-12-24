@@ -2,40 +2,29 @@
   "name": "abilisense",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://zur300.github.io/VidRecorder",
   "scripts": {
-    "deploy": "npm run build&& gh-pages -d build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
     "aws-sdk": "^2.1264.0",
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.5",
     "formidable": "^2.0.1",
-    "gh-pages": "^4.0.0",
     "next": "13.0.5",
     "primeicons": "^6.0.1",
     "primereact": "^8.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-media-recorder": "^1.6.5",
-    "react-router-dom": "^6.4.5",
     "react-transition-group": "^4.4.5",
     "typescript": "4.9.3",
     "vmsg": "^0.4.0",
     "xml2js": "^0.4.23"
-  },
-  "devDependencies": {
-    "@types/node": "^18.11.17"
-  },"browser": {
-    "fs": false,
-    "path": false,
-    "os": false
   }
-  
 }

@@ -1,15 +1,16 @@
 // imports:
+// import { getMediaList } from "./GetMedia";
+import React, { useState, useEffect } from "react"; // library of react skills
 import { useSearchParams } from "next/navigation";
-import { Button } from "primereact/button"; // library of button types and styles from prime react
-import React, { useEffect, useState } from "react"; // library of react skills
 import { useReactMediaRecorder } from "react-media-recorder"; // the library that alow to record the video
+import { Button } from "primereact/button"; // library of button types and styles from prime react
 // FileUpload is an advanced uploader with dragdrop support, multi file uploads, auto uploading, progress tracking and validations
-import "primeicons/primeicons.css"; // icons
 import { FileUpload } from "primereact/fileupload"; // the library that upload files to the cloud
-import "primereact/resources/primereact.min.css"; // core css
 import "primereact/resources/themes/lara-light-indigo/theme.css"; // theme
-import { getUrlsList, uploadData } from "./api/S3APIs";
+import "primereact/resources/primereact.min.css"; // core css
+import "primeicons/primeicons.css"; // icons
 // import { url } from "inspector";
+import { getUrlsList } from "./GetMedia";
 
 // create a record function
 function Record() {
@@ -23,6 +24,19 @@ function Record() {
     setFiles(files);
     console.log(files);
   };
+
+  // const getAllFiles = () => {
+  //   fetch("/api/S3APIs")
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
+  //       setFiles(data);
+  //       console.log(files);
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
   const mapList = () => {
     console.log("mmn");
@@ -53,28 +67,42 @@ function Record() {
           icon="pi pi-play"
         />
         {/* button that stop the recordings */}
-        <Button
-          className="p-button-rounded p-button-danger"
-          style={{ position: "relative", left: 20 }}
-          onClick={stopRecording}
-          icon="pi pi-pause"
-        />
+        <form name={"index"} action={"/api/S3APIs"} method={"post"}>
+          <video name={"video"} src={mediaBlobUrl} autoPlay controls></video>
+
+          <Button
+            className="p-button-rounded p-button-danger"
+            type={"submit"}
+            style={{ position: "relative", left: 20 }}
+            onSubmit={stopRecording}
+            icon="pi pi-pause"
+          />
+        </form>
       </div>
       <br />
       <br />
       {/* show the video that recorded from the camera */}
-      {/* <video src={mediaBlobUrl} autoPlay controls></video> */}
-      <video
-        src="https://nyc3.digitaloceanspaces.com/itay-audios/6daefc7b-1c2a-4aaa-bc40-05401258d880%20(1).mp3"
-        // autoPlay
+
+      {/* <video
+        src="https://itay-audios.nyc3.digitaloceanspaces.com/703444fb-9425-4a63-b5fd-fed3f545b6dc.mp3"
+        autoPlay
         controls
-      ></video>
-      <button onClick={uploadData}>upload</button>
+      ></video> */}
       {mapList()}
       <br />
       <br />
       {/* link to the cloud upload */}
-      {/* <FileUpload name="demo" url="/api/S3APIs"></FileUpload> */}
+      {/* <button name={"demo"} url={"/api/S3APIs"}>
+        get list
+      </button> */}
+
+      {/* <button
+        onClick={() => {
+          getMediaList();
+        }}
+      >
+        press
+      </button> */}
     </div>
   );
 }

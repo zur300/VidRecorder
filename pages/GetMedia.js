@@ -1,13 +1,19 @@
-// import fs from "fs";
 import AWS from "aws-sdk";
-// import formidable from "formidable";
+
+import {
+  BUCKET_URL,
+  DO_SPACES_BUCKET,
+  DO_SPACES_ID,
+  DO_SPACES_SECRET,
+  DO_SPACES_URL,
+} from "./api/consts";
 
 const s3Client = new AWS.S3({
-  endpoint: process.env.DO_SPACES_URL,
+  endpoint: DO_SPACES_URL,
   region: "nyc3",
   credentials: {
-    accessKeyId: process.env.DO_SPACES_ID,
-    secretAccessKey: process.env.DO_SPACES_SECRET,
+    accessKeyId: DO_SPACES_ID,
+    secretAccessKey: DO_SPACES_SECRET,
   },
 });
 
@@ -17,45 +23,46 @@ export const config = {
   },
 };
 
-export async function getMediaList() {
-  //   const form = formidable();
-  //   form.parse(req, async (err, fields, files) => {
-  try {
-    return s3Client.getObject(
-      {
-        Bucket: process.env.DO_SPACES_BUCKET,
-        // Key: files.demo.originalFilename,
-        Key: "newQ",
-        // Body: fs.createReadStream(
-        //   "C:/Users/Yoga/Desktop/abilisense/abilisense/pages/api/newQ.mp3"
-        // ),
-        // ACL: "public-read",
-      },
-      (err, data) => {
-        // res.status(205).send("file-dowloaded");
-        console.log(data);
-      }
-    );
+export const getUrlsList = async () => {
+  return s3Client
+    .listObjectsV2({
+      Bucket: DO_SPACES_BUCKET,
+      MaxKeys: 10,
+    })
+    .promise()
+    .then((data) => {
+      const urls = [];
+      data.Contents.map((file) => {
+        const fileKey = file.Key;
+        const fileUrl = BUCKET_URL + encodeURIComponent(fileKey);
+        urls.push(fileUrl);
+      });
+      return urls;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
-    // return s3Client.listObjectsV2(
-    //   {
-    //     Bucket: process.env.DO_SPACES_BUCKET,
-    //     MaxKeys: 50,
-    //     // Key: files.demo.originalFilename,
-    //     // Key: "newQ",
-    //     // Body: fs.createReadStream(
-    //     //   "C:/Users/Yoga/Desktop/abilisense/abilisense/pages/api/newQ.mp3"
-    //     // ),
-    //     // ACL: "public-read",
-    //   },
-    //   async (data) => {
-    //     res.status(205).send("file-uplaoded");
-    //     console.log(data);
-    //   }
-    // );
-  } catch (e) {
-    console.log(e);
-    // res.status(500).send("Error uploading file");
-  }
-  //   });
-}
+// export const uploadData = async () => {
+//   // console.log(fs.createReadStream);
+//   const body = fs.createReadStream(
+//     "C:/Users/Yoga/Desktop/abilisense/abilisense/pages/api/newQ.mp3"
+//   );
+
+//   console.log(body);
+//   return s3Client
+//     .putObject({
+//       Bucket: DO_SPACES_BUCKET,
+//       Key: "files.demo.originalFilename",
+//       Body: body,
+//       ACL: "public-read",
+//     })
+//     .promise()
+//     .then(() => {
+//       res.status(200).send("file-uplaoded");
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// };
