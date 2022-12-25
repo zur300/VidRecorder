@@ -2,5 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/Record": "pages/Record.js"
+  "/Record": "pages/Record.js",
+  "/api/S3APIs": "pages/api/S3APIs.js"
 }

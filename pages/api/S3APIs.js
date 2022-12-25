@@ -18,58 +18,32 @@ export const config = {
 };
 
 export default async function Hanlder(req, res) {
-  console.log(req.body);
+  console.log("req!!!!!!!!!!!!!!!!!!!!!!", req?.body?.mediaBlobUrl);
   const form = formidable();
   form.parse(req, async (err, fields, files) => {
-    // console.log(files.demo.filepath);
-    // if (!files.demo) {
-    //   res.status(400).send("no file uploaded");
-    //   return;
-    // }
     try {
-      console.log(files);
+      // console.log(
+      //   "files! !!!!!!!!!!!!!!!!!!",
+      //   fs.createReadStream(req.body.mediaBlobUrl)
+      // );
+
+      // const file = new File([req.body.mediaBlobUrl], "filename");
+      // console.log("fileasdfasdfasdfadsfasddfdsa", file);
       return s3Client.putObject(
         {
           Bucket: process.env.DO_SPACES_BUCKET,
           // Key: files.demo.originalFilename,
           Key: "newQui",
-          Body: fs.createReadStream(files.video.filepath),
+          Body: fs.createReadStream(
+            "C:/Users/Yoga/Desktop/VidRecoder/VidRecorder/pages/api/newQ.mp3"
+          ),
           ACL: "public-read",
         },
         async () => res.status(205).send("file-uplaoded")
       );
-
-      // return s3Client.getObject(
-      //   {
-      //     Bucket: process.env.DO_SPACES_BUCKET,
-      //     // Key: files.demo.originalFilename,
-      //     Key: "newQ",
-      //     // Body: fs.createReadStream(
-      //     //   "C:/Users/Yoga/Desktop/abilisense/abilisense/pages/api/newQ.mp3"
-      //     // ),
-      //     // ACL: "public-read",
-      //   },
-      //   async (err, data) => {
-      //     res.status(205).send("file-dowloaded");
-      //     console.log(data);
-      //   }
-      // );
-
-      // return s3Client.listObjectsV2(
-      //   {
-      //     Bucket: process.env.DO_SPACES_BUCKET,
-      //     MaxKeys: 6,
-      //   },
-      //   (err, data) => {
-      //     res.status(205).send("file-uplaoded");
-      //     console.log(data?.Contents);
-
-      //     // res.json(data);
-      //   }
-      // );
     } catch (e) {
       console.log(e);
-      res.status(500).send("Error uploading file");
     }
+    return;
   });
 }

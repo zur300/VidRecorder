@@ -15,6 +15,8 @@ import { getUrlsList } from "./GetMedia";
 // create a record function
 function Record() {
   const [files, setFiles] = useState([]);
+  const [blob, Setblob] = useState([undefined]);
+
   useEffect(() => {
     getAllFiles();
   }, []);
@@ -50,6 +52,22 @@ function Record() {
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ video: true });
 
+  useEffect(() => {
+    console.log("mediaBlobUrl", mediaBlobUrl);
+    if (mediaBlobUrl) {
+      fetch("/api/S3APIs", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({ mediaBlobUrl }),
+      }).then((res) => {
+        console.log("res", res);
+      });
+    }
+  }, [mediaBlobUrl]);
+
   return (
     <div className="index-div">
       <h1>Video Recoder</h1>
@@ -67,17 +85,19 @@ function Record() {
           icon="pi pi-play"
         />
         {/* button that stop the recordings */}
-        <form name={"index"} action={"/api/S3APIs"} method={"post"}>
-          <video name={"video"} src={mediaBlobUrl} autoPlay controls></video>
-
-          <Button
-            className="p-button-rounded p-button-danger"
-            type={"submit"}
-            style={{ position: "relative", left: 20 }}
-            onSubmit={stopRecording}
-            icon="pi pi-pause"
-          />
-        </form>
+        <video
+          name={"video"}
+          src={mediaBlobUrl}
+          value={"mediaBlobUrl"}
+          // autoPlay
+          controls
+        />
+        <Button
+          className="p-button-rounded p-button-danger"
+          style={{ position: "relative", left: 20 }}
+          onClick={stopRecording}
+          icon="pi pi-pause"
+        />
       </div>
       <br />
       <br />
